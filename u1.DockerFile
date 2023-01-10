@@ -2,7 +2,7 @@ FROM alpine:3.14
 RUN apk add --update --no-cache python3
 RUN python3 -m ensurepip
 
-ADD f1.py ./f1.py
+ADD u1.py ./u1.py
 
 ENV WAN_ADDR="127.0.0.1"
 ENV WAN_HTTP_PORT=2433
@@ -16,5 +16,5 @@ ENV U2_ADDR="127.0.0.1"
 ENV U2_IN_PORT=22221
 ENV U2_OUT_PORT=22223
 
-CMD python3 f1.py
+RUN python3 u1.py
 
