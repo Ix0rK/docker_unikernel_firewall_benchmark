@@ -1,0 +1,7 @@
+name: u3-example
+title: U3 Example
+author: Ilan K.
+version: "1.0"
+require:
+- osv.python3x
+created: "2023-01-13T10:43:44Z"

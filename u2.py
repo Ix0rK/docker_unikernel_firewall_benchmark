@@ -22,7 +22,7 @@ class Tee(object):
         self.file.flush()
 
 timestamp = str(datetime.datetime.now().strftime("%Y%m%d_%H-%M-%S"))
-tee = Tee("U2-"+timestamp+".log","w")
+tee = Tee("U1.log","w")
 hasToStop = [False]
 class Handler_U2_IN(socketserver.BaseRequestHandler):
     """

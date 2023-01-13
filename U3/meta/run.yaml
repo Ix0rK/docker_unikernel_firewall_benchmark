@@ -1,0 +1,4 @@
+runtime: native
+config_set:
+  default:
+    bootcmd: "python3 u3.py"

@@ -1,0 +1,88 @@
+version: "2"
+services:
+  U1:
+    env_file:
+      - .env
+    image: u1-rsx217-project:lastest
+    build:
+      dockerfile: ./u1.DockerFile
+      context: .
+    networks:
+      lan-tier:
+        ipv4_address: $U1_ADDR
+    ports:
+      - $U1_ADDR:$U1_HTTP_PORT:$U1_HTTP_PORT
+      - $U1_ADDR:$U1_SSH_PORT:$U1_SSH_PORT
+    healthcheck:
+      test:
+        - "CMD-SHELL"
+        - "curl -f $U1_ADDR:$U1_HTTP_PORT"
+        - "curl -f $U1_ADDR:$U1_SSH_PORT"
+      timeout: 20s
+  U2:
+    env_file:
+      - .env
+    image: u2-rsx217-project:latest
+    build:
+      dockerfile: ./u2.DockerFile
+      context: .
+    networks:
+      lan-tier:
+        ipv4_address: $U2_ADDR
+    ports:
+      - $U2_ADDR:$U2_IN_PORT:$U2_IN_PORT
+      - $U2_ADDR:$U2_OUT_PORT:$U2_OUT_PORT
+    healthcheck:
+      test:
+        - "CMD-SHELL"
+        - "curl -f $U2_ADDR:$U2_IN_PORT"
+        - "curl -f $U2_ADDR:$U2_OUT_PORT"
+      timeout: 20s
+  F1:
+    env_file:
+      - .env
+    image: f1-rsx217-project:lastest
+    build:
+      dockerfile: ./f1.DockerFile
+      context: .
+    networks:
+      lan-tier:
+        ipv4_address: $F1_LAN_ADDR
+      wan-tier:
+        ipv4_address: $F1_ADDR
+    ports:
+      - $F1_ADDR:$F1_HTTP_PORT:$F1_HTTP_PORT
+      - $F1_ADDR:$F1_SSH_PORT:$F1_SSH_PORT
+    healthcheck:
+      test:
+        - "CMD-SHELL"
+        - "curl -f $F1_ADDR:$F1_HTTP_PORT"
+        - "curl -f $F1_ADDR:$F1_SSH_PORT"
+      timeout: 20s
+  U3:
+    env_file:
+      - .env
+    image: u3-rsx217-project:latest
+    build:
+      dockerfile: ./u3.DockerFile
+      context: .
+    networks:
+      - wan-tier
+    depends_on:
+      F1:
+        condition: service_healthy
+      U1:
+        condition: service_healthy
+      U2:
+        condition: service_healthy
+networks:
+  wan-tier:
+    ipam:
+      config:
+        - subnet: $WAN_ADDR
+          gateway: 172.101.0.1
+  lan-tier:
+    ipam:
+      config:
+        - subnet: $LAN_ADDR
+          gateway: 172.102.0.1
