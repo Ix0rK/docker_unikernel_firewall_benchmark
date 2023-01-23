@@ -1,6 +1,6 @@
-name: u3-osv-rsx217
-title: U3 OSV RSX217O
-author: Ix0rK
+name: f1-osv-rsx217
+title: F1 OSV RSX217
+author: Ilan K.
 version: "1.0"
 require:
   - osv.python3x

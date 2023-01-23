@@ -11,12 +11,12 @@ class Tee(object):
         self.file = open(name, mode)
         self.stdout = sys.stdout
         sys.stdout = self
-        self.start_time = time.perf_counter_ns()
+        self.start_time = time.perf_counter()
     def __del__(self):
         sys.stdout = self.stdout
         self.file.close()
     def write(self, data):
-        self.file.write(data +"|-->" + str(time.perf_counter_ns() - self.start_time) +"\n")
+        self.file.write(data +"|-->" + str(time.perf_counter() - self.start_time) +"\n")
         self.stdout.write(data+"\n")
     def flush(self):
         self.file.flush()

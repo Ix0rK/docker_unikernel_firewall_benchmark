@@ -1,5 +1,5 @@
 runtime: native
 config_set:
   default:
-    bootcmd: python3 u3.py
+    bootcmd: python3 u2.py
     shell: true
