@@ -3,16 +3,18 @@ services:
   U1:
     env_file:
       - .env
-    image: u1-rsx217-project:lastest
+    image: u1-rsx217-project:latest
     build:
-      dockerfile: ./u1.DockerFile
+      dockerfile: ./U1/u1.DockerFile
       context: .
     networks:
       lan-tier:
         ipv4_address: $U1_ADDR
     ports:
-      - $U1_ADDR:$U1_HTTP_PORT:$U1_HTTP_PORT
-      - $U1_ADDR:$U1_SSH_PORT:$U1_SSH_PORT
+ #     - $U1_HTTP_PORT:$U1_HTTP_PORT
+      - $U1_HTTP_PORT:$U1_HTTP_PORT
+#      - $U1_ADDR:$U1_SSH_PORT:$U1_SSH_PORT
+      - $U1_SSH_PORT:$U1_SSH_PORT
     healthcheck:
       test:
         - "CMD-SHELL"
@@ -24,14 +26,16 @@ services:
       - .env
     image: u2-rsx217-project:latest
     build:
-      dockerfile: ./u2.DockerFile
+      dockerfile: ./U2/u2.DockerFile
       context: .
     networks:
       lan-tier:
         ipv4_address: $U2_ADDR
     ports:
-      - $U2_ADDR:$U2_IN_PORT:$U2_IN_PORT
-      - $U2_ADDR:$U2_OUT_PORT:$U2_OUT_PORT
+      - $U2_IN_PORT:$U2_IN_PORT
+      # - $U2_ADDR:$U2_IN_PORT:$U2_IN_PORT
+      - $U2_OUT_PORT:$U2_OUT_PORT
+      # - $U2_ADDR:$U2_OUT_PORT:$U2_OUT_PORT
     healthcheck:
       test:
         - "CMD-SHELL"
@@ -43,7 +47,7 @@ services:
       - .env
     image: f1-rsx217-project:lastest
     build:
-      dockerfile: ./f1.DockerFile
+      dockerfile: ./F1/f1.DockerFile
       context: .
     networks:
       lan-tier:
@@ -51,8 +55,10 @@ services:
       wan-tier:
         ipv4_address: $F1_ADDR
     ports:
-      - $F1_ADDR:$F1_HTTP_PORT:$F1_HTTP_PORT
-      - $F1_ADDR:$F1_SSH_PORT:$F1_SSH_PORT
+      - $F1_HTTP_PORT:$F1_HTTP_PORT
+      # - $F1_ADDR:$F1_HTTP_PORT:$F1_HTTP_PORT
+      - $F1_SSH_PORT:$F1_SSH_PORT
+      # - $F1_ADDR:$F1_SSH_PORT:$F1_SSH_PORT
     healthcheck:
       test:
         - "CMD-SHELL"
@@ -64,7 +70,7 @@ services:
       - .env
     image: u3-rsx217-project:latest
     build:
-      dockerfile: ./u3.DockerFile
+      dockerfile: ./U3/u3.DockerFile
       context: .
     networks:
       - wan-tier
