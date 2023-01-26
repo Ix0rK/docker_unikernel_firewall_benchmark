@@ -11,16 +11,10 @@ services:
       lan-tier:
         ipv4_address: $U1_ADDR
     ports:
- #     - $U1_HTTP_PORT:$U1_HTTP_PORT
       - $U1_HTTP_PORT:$U1_HTTP_PORT
-#      - $U1_ADDR:$U1_SSH_PORT:$U1_SSH_PORT
       - $U1_SSH_PORT:$U1_SSH_PORT
-    healthcheck:
-      test:
-        - "CMD-SHELL"
-        - "curl -f $U1_ADDR:$U1_HTTP_PORT"
-        - "curl -f $U1_ADDR:$U1_SSH_PORT"
-      timeout: 20s
+    volumes:
+      - $PWD/logs/docker-logs:/logs
   U2:
     env_file:
       - .env
@@ -33,15 +27,9 @@ services:
         ipv4_address: $U2_ADDR
     ports:
       - $U2_IN_PORT:$U2_IN_PORT
-      # - $U2_ADDR:$U2_IN_PORT:$U2_IN_PORT
       - $U2_OUT_PORT:$U2_OUT_PORT
-      # - $U2_ADDR:$U2_OUT_PORT:$U2_OUT_PORT
-    healthcheck:
-      test:
-        - "CMD-SHELL"
-        - "curl -f $U2_ADDR:$U2_IN_PORT"
-        - "curl -f $U2_ADDR:$U2_OUT_PORT"
-      timeout: 20s
+    volumes:
+      - $PWD/logs/docker-logs:/logs
   F1:
     env_file:
       - .env
@@ -56,15 +44,9 @@ services:
         ipv4_address: $F1_ADDR
     ports:
       - $F1_HTTP_PORT:$F1_HTTP_PORT
-      # - $F1_ADDR:$F1_HTTP_PORT:$F1_HTTP_PORT
       - $F1_SSH_PORT:$F1_SSH_PORT
-      # - $F1_ADDR:$F1_SSH_PORT:$F1_SSH_PORT
-    healthcheck:
-      test:
-        - "CMD-SHELL"
-        - "curl -f $F1_ADDR:$F1_HTTP_PORT"
-        - "curl -f $F1_ADDR:$F1_SSH_PORT"
-      timeout: 20s
+    volumes:
+      - $PWD/logs/docker-logs:/logs
   U3:
     env_file:
       - .env
@@ -74,13 +56,12 @@ services:
       context: .
     networks:
       - wan-tier
+    volumes:
+      - $PWD/logs/docker-logs:/logs
     depends_on:
-      F1:
-        condition: service_healthy
-      U1:
-        condition: service_healthy
-      U2:
-        condition: service_healthy
+      - F1
+      - U1
+      - U2
 networks:
   wan-tier:
     ipam:

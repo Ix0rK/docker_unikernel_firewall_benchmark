@@ -22,12 +22,12 @@ class Tee(object):
     def flush(self):
         self.file.flush()
 timestamp = str(datetime.datetime.now().strftime("%Y%m%d_%H-%M-%S"))
-tee = Tee("F1.log","w")
+tee = Tee("/logs/F1.log","w")
 
 hasToStop = [False]
 
 
-WAN_ADDR = os.environ['F1_ADDR'] if os.environ.get('F1_ADDR') is not None else "127.0.0.1"
+WAN_ADDR = os.environ['F1_LIST_ADDR'] if os.environ.get('F1_LIST_ADDR') is not None else "127.0.0.1"
 WAN_HTTP_PORT = int(os.environ['F1_HTTP_PORT']) if os.environ.get('F1_HTTP_PORT') is not None else 2433
 WAN_SSH_PORT = int(os.environ['F1_SSH_PORT']) if os.environ.get('F1_SSH_PORT') is not None else 2434
 

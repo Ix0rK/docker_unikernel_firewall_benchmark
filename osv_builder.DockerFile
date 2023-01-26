@@ -11,4 +11,4 @@ RUN capstan package compose --pull-missing u2-osv-rsx217
 WORKDIR /git-repos/osv/U3
 RUN capstan package compose --pull-missing u3-osv-rsx217
 WORKDIR /git-repos/osv/F1
-RUN capstan package compose --pull-missing F1-osv-rsx217
+RUN capstan package compose --pull-missing f1-osv-rsx217

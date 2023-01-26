@@ -3,6 +3,6 @@ RUN apk add --update --no-cache python3
 RUN python3 -m ensurepip
 
 ADD ./U3/u3.py ./u3.py
-
+RUN mkdir logs
 ENTRYPOINT python3 u3.py
 

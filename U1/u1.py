@@ -20,7 +20,7 @@ class Tee(object):
     def flush(self):
         self.file.flush()
 timestamp = str(datetime.datetime.now().strftime("%Y%m%d_%H-%M-%S"))
-tee = Tee("U1.log","w")
+tee = Tee("/logs/U1.log","w")
 hasToStop = [False]
 class Handler_TCPServer(socketserver.BaseRequestHandler):
     """
@@ -46,7 +46,7 @@ class Handler_TCPServer(socketserver.BaseRequestHandler):
         self.request.sendall("ACK from TCP Server".encode())
 
 
-U1_ADDR = os.environ['U1_ADDR'] if os.environ.get('U1_ADDR') is not None else "127.0.0.1"
+U1_ADDR = os.environ['U1_LIST_ADDR'] if os.environ.get('U1_LIST_ADDR') is not None else "127.0.0.1"
 U1_HTTP_PORT = int(os.environ['U1_HTTP_PORT']) if os.environ.get('U1_HTTP_PORT') is not None else 20433
 U1_SSH_PORT = int(os.environ['U2_SSH_PORT']) if os.environ.get('U2_SSH_PORT') is not None else 20022
 
