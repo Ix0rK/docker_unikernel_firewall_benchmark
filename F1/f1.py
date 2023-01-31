@@ -22,7 +22,7 @@ class Tee(object):
     def flush(self):
         self.file.flush()
 timestamp = str(datetime.datetime.now().strftime("%Y%m%d_%H-%M-%S"))
-tee = Tee("/logs/F1.log","w")
+tee = Tee("F1.log","w")
 
 hasToStop = [False]
 

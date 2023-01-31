@@ -1,7 +1,7 @@
 FROM osvunikernel/osv-ubuntu-20.10-builder-base
 COPY ./U1 ./U1
 COPY ./U2 ./U2
-COPY ./U2 ./U3
+COPY ./U3 ./U3
 COPY ./F1 ./F1
 
 WORKDIR /git-repos/osv/U1

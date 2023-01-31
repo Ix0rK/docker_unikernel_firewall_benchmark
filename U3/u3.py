@@ -102,7 +102,7 @@ def requestEnd(tee:Tee):
         tcp_ssh_client.close()
 if __name__ == "__main__":
     timestamp = str(datetime.datetime.now().strftime("%Y%m%d_%H-%M-%S"))
-    tee = Tee("/logs/U3.log","w")
+    tee = Tee("U3.log","w")
     tee.write("U3 UP!")
     requestBypassFirewall(tee)
     requestSimple(tee)
