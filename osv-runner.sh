@@ -3,33 +3,38 @@
 
 set_vInterfaces(){
     #lan-rsx217
-    sudo brctl addbr lan-rsx217
-    sudo ip addr add 172.102.0.1/32 broadcast 172.102.0.255 dev lan-rsx217
-    #brctl addif br-lan-rsx217 eth-lan-rsx217
+    sudo brctl addbr br-lan-rsx217
+    sudo ip link add name eth-lan-rsx217 type dummy
+    sudo ip addr add 172.102.0.1/24 broadcast 172.102.0.255 dev eth-lan-rsx217 
+    sudo brctl addif br-lan-rsx217 eth-lan-rsx217
     # F1 lan
     sudo ip tuntap add dev tap_F1_lan mode tap
-    sudo brctl addif lan-rsx217 tap_F1_lan
+    sudo brctl addif br-lan-rsx217 tap_F1_lan
     # U1 lan
     sudo ip tuntap add dev tap_U1_lan mode tap
-    sudo brctl addif lan-rsx217 tap_U1_lan
+    sudo brctl addif br-lan-rsx217 tap_U1_lan
     # U2 lan
     sudo ip tuntap add dev tap_U2_lan mode tap
-    sudo brctl addif lan-rsx217 tap_U2_lan
-    
+    sudo brctl addif br-lan-rsx217 tap_U2_lan
     #wan-rsx217
-    sudo brctl addbr wan-rsx217
-    sudo ip addr add 172.101.0.1/32 broadcast 172.101.0.255 dev wan-rsx217
+    sudo brctl addbr br-wan-rsx217
+    sudo ip link add name eth-wan-rsx217 type dummy
+    sudo brctl addif br-wan-rsx217 eth-wan-rsx217
+    sudo ip addr add 172.101.0.1/24 broadcast 172.101.0.255 dev eth-wan-rsx217
+    
     #brctl addif br-wan-rsx217 eth-wan-rsx217
     #F1 wan
     sudo ip tuntap add dev tap_F1_wan mode tap
-    sudo brctl addif wan-rsx217 tap_F1_wan
+    sudo brctl addif br-wan-rsx217 tap_F1_wan
     #U3 wan
     sudo ip tuntap add dev tap_U3_wan mode tap
-    sudo brctl addif wan-rsx217 tap_U3_wan
+    sudo brctl addif br-wan-rsx217 tap_U3_wan
 
     # UP!
-    sudo ifconfig lan-rsx217 up
-    sudo ifconfig wan-rsx217 up
+    sudo ifconfig eth-lan-rsx217 up
+    # sudo ifconfig br-lan-rsx217 up
+    sudo ifconfig eth-wan-rsx217 up
+    # sudo ifconfig br-wan-rsx217 up
     sudo ifconfig tap_F1_lan up
     sudo ifconfig tap_U1_lan up
     sudo ifconfig tap_U2_lan up
@@ -42,22 +47,24 @@ set_vInterfaces(){
 }
 
 down_vInterfaces(){
-    sudo ifconfig lan-rsx217 down
-    sudo ifconfig wan-rsx217 down
+    sudo ifconfig br-lan-rsx217 down
+    sudo ifconfig eth-lan-rsx217 down
+    sudo ifconfig br-wan-rsx217 down
+    sudo ifconfig eth-wan-rsx217 down
     sudo ifconfig tap_F1_lan down
     sudo ifconfig tap_U1_lan down
     sudo ifconfig tap_U2_lan down
     sudo ifconfig tap_F1_wan down
     sudo ifconfig tap_U3_wan down
-    sudo ip addr delete 172.102.0.1/32 dev lan-rsx217
-    sudo ip addr delete 172.101.0.1/32 dev wan-rsx217
+    sudo ip addr delete 172.102.0.1/24 dev eth-lan-rsx217
+    sudo ip addr delete 172.101.0.1/24 dev eth-wan-rsx217
     sudo ip tuntap del dev tap_F1_lan mode tap
     sudo ip tuntap del dev tap_U1_lan mode tap
     sudo ip tuntap del dev tap_U2_lan mode tap
     sudo ip tuntap del dev tap_F1_wan mode tap
     sudo ip tuntap del dev tap_U3_wan mode tap
-    sudo brctl delbr lan-rsx217
-    sudo brctl delbr wan-rsx217
+    sudo brctl delbr br-lan-rsx217
+    sudo brctl delbr br-wan-rsx217
     sudo killall dnsmasq
 }
 #QEMU U1
@@ -93,20 +100,19 @@ run_osv(){
 }
 
 set_vInterfaces
-#sudo ../osv/scripts/run.py --verbose -n -b lan-rsx217 --ip=172.102.0.5 -i osv-images/u1-osv-rsx217/u1-osv-rsx217.qemu
-# #U1
+# #sudo ../osv/scripts/run.py --verbose -n -b lan-rsx217 --ip=172.102.0.5 -i osv-images/u1-osv-rsx217/u1-osv-rsx217.qemu
+# # #U1
 # $(run_qemu osv-images/u1-osv-rsx217/u1-osv-rsx217.qemu tap_U1_lan 2c:4d:11:12:11:01) &
-# echo U1 UP!
-# #U2
+# # echo U1 UP!
+# # #U2
 # $(run_qemu osv-images/u2-osv-rsx217/u2-osv-rsx217.qemu tap_U2_lan 2c:4d:11:12:11:02) &
-# echo U2 UP!
-# #F1
+# # echo U2 UP!
+# # #F1
 # $(run_f1 osv-images/f1-osv-rsx217/f1-osv-rsx217.qemu tap_F1_lan 2c:4d:11:12:11:10 tap_F1_wan) &
-# echo F1 UP!
+# # echo F1 UP!
 # #U3
 # sleep 5
 # run_qemu osv-images/u3-osv-rsx217/u3-osv-rsx217.qemu tap_U3_wan 2c:4d:11:12:11:03
-
 down_vInterfaces
 
 
