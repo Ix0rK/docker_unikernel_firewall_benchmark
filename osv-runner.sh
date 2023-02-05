@@ -60,26 +60,24 @@ down_vDevices(){
 }
 run_qemu(){
     sudo qemu-system-x86_64 \
+         -nographic \
          -chardev stdio,mux=on,id=stdio -mon chardev=stdio,mode=readline \
          -device isa-serial,chardev=stdio -drive file=$1,if=virtio \
-         -netdev tap,id=mynet0,ifname=$2,script=no,downscript=no \
-         -device e1000,netdev=mynet0,mac=$3 \
-         -device virtio-rng-pci \
-         -nographic
+         -netdev tap,id=$2,ifname=$2,script=no,downscript=no \
+         -device virtio-net-pci,netdev=$2,mac=$3
 }
 run_f1(){
     sudo qemu-system-x86_64 \
+         -nographic \
          -chardev stdio,mux=on,id=stdio -mon chardev=stdio,mode=readline \
          -device isa-serial,chardev=stdio -drive file=$1,if=virtio \
-         -netdev tap,id=mynet0,ifname=$2,script=no,downscript=no \
-         -device e1000,netdev=mynet0,mac=$3 \
-         -netdev tap,id=mynet1,ifname=$4,script=no,downscript=no \
-         -device e1000,netdev=mynet1,mac=$3 \
-         -device virtio-rng-pci \
-         -nographic
-
+         -netdev tap,id=$2,ifname=$2,script=no,downscript=no \
+         -device virtio-net-pci,netdev=$2,mac=$3 \
+         -netdev tap,id=$4,ifname=$4,script=no,downscript=no \
+         -device virtio-net-pci,netdev=$4,mac=$3
 }
 set_vDevices
+sleep 3
 #U1
 $(run_qemu osv-images/u1-osv-rsx217/u1-osv-rsx217.qemu tap_U1_lan 2c:4d:11:12:11:01) &
 #U2
