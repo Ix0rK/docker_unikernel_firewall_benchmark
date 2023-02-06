@@ -26,7 +26,7 @@ set_vDevices(){
     # dnsmasq for dhcp static ip on mac adress
     sudo dnsmasq --conf-file=$PWD/dnsmasq-utils/dnsmasq-lan-rsx217.conf
     sudo dnsmasq --conf-file=$PWD/dnsmasq-utils/dnsmasq-wan-rsx217.conf
-
+    
     # Up devices
     sudo ifconfig br-lan-rsx217 up
     sudo ifconfig br-wan-rsx217 up
@@ -76,8 +76,8 @@ run_f1(){
          -netdev tap,id=$4,ifname=$4,script=no,downscript=no \
          -device virtio-net-pci,netdev=$4,mac=$3
 }
+down_vDevices
 set_vDevices
-sleep 3
 #U1
 $(run_qemu osv-images/u1-osv-rsx217/u1-osv-rsx217.qemu tap_U1_lan 2c:4d:11:12:11:01) &
 #U2
@@ -85,7 +85,11 @@ $(run_qemu osv-images/u2-osv-rsx217/u2-osv-rsx217.qemu tap_U2_lan 2c:4d:11:12:11
 #F1
 $(run_f1 osv-images/f1-osv-rsx217/f1-osv-rsx217.qemu tap_F1_lan 2c:4d:11:12:11:10 tap_F1_wan) &
 #U3
+timeout 5 sh -c 'until nc -z 172.101.0.10 2433; do sleep 0.1; done'
+timeout 5 sh -c 'until nc -z 172.101.0.10 20433; do sleep 0.1; done'
+timeout 5 sh -c 'until nc -z 172.102.0.2 22221; do sleep 0.1; done'
+echo "Port are Open"
 run_qemu osv-images/u3-osv-rsx217/u3-osv-rsx217.qemu tap_U3_wan 2c:4d:11:12:11:03
-down_vDevices
+trap down_vDevices EXIT
 
 

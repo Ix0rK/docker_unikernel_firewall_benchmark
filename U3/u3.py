@@ -7,16 +7,16 @@ import time
 
 class Tee(object):
     def __init__(self, name, mode):
-        self.file = open(name, mode)
+        # self.file = open(name, mode)
         self.stdout = sys.stdout
-        sys.stdout = self
+        # sys.stdout = self
         self.start_time = time.perf_counter() 
     def __del__(self):
         sys.stdout = self.stdout
-        self.file.close()
+        # self.file.close()
     def write(self, data):
-        self.file.write(data +"|-->" + str(time.perf_counter() - self.start_time) +"\n")
-        self.stdout.write(data+"\n")
+        # self.file.write(data +"|-->" + str(time.perf_counter() - self.start_time) +"\n")
+        self.stdout.write(data +"|-->" + str(time.perf_counter() - self.start_time) +"\n")
     def flush(self):
         self.file.flush()
 
@@ -104,9 +104,9 @@ if __name__ == "__main__":
     timestamp = str(datetime.datetime.now().strftime("%Y%m%d_%H-%M-%S"))
     tee = Tee("U3.log","w")
     tee.write("U3 UP!")
-    requestBypassFirewall(tee)
+    # requestBypassFirewall(tee)
     requestSimple(tee)
     requestWithRedirection(tee)
     requestEnd(tee)
-    tee.flush()
+    # tee.flush()
     tee.write("U3 END !")

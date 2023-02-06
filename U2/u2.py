@@ -8,16 +8,16 @@ import datetime
 import time
 class Tee(object):
     def __init__(self, name, mode):
-        self.file = open(name, mode)
+        # self.file = open(name, mode)
         self.stdout = sys.stdout
-        sys.stdout = self
-        self.start_time = time.perf_counter()
+        # sys.stdout = self
+        self.start_time = time.perf_counter() 
     def __del__(self):
         sys.stdout = self.stdout
-        self.file.close()
+        # self.file.close()
     def write(self, data):
-        self.file.write(data +"|-->" + str(time.perf_counter() - self.start_time) +"\n")
-        self.stdout.write(data+"\n")
+        # self.file.write(data +"|-->" + str(time.perf_counter() - self.start_time) +"\n")
+        self.stdout.write(data +"|-->" + str(time.perf_counter() - self.start_time) +"\n")
     def flush(self):
         self.file.flush()
 
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     tcp_u2_out_server.shutdown()
     for x in threads:
         x.join()
-    tee.flush()
+    # tee.flush()
     tee.write("U2 END !")
 
 
