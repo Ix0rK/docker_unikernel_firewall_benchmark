@@ -12,13 +12,13 @@ class Tee(object):
         # self.file = open(name, mode)
         self.stdout = sys.stdout
         
-        self.start_time = time.perf_counter() 
+        self.start_time = time.time() 
     def __del__(self):
         sys.stdout = self.stdout
         # self.file.close()
     def write(self, data):
         # self.file.write(data +"|-->" + str(time.perf_counter() - self.start_time) +"\n")
-        self.stdout.write(data +"|-->" + str(time.perf_counter() - self.start_time) +"\n")
+        self.stdout.write(data +"|-->" + str(time.time() - self.start_time) +"\n")
     def flush(self):
         self.file.flush()
 timestamp = str(datetime.datetime.now().strftime("%Y%m%d_%H-%M-%S"))
