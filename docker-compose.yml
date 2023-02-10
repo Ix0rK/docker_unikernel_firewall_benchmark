@@ -30,11 +30,6 @@ services:
       - $U2_OUT_PORT:$U2_OUT_PORT
     volumes:
       - $PWD/logs/docker-logs:/logs
-    # healthcheck:
-    #   test: ["CMD","netstat -an | grep -c 2433 > /dev/null; if [ 0 != $? ]; then exit 1; fi;"]
-    #   interval: 500ms
-    #   retries: 10
-    #   timeout: 5s
   F1:
     env_file:
       - .env

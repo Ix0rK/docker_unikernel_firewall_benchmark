@@ -1,5 +1,4 @@
-#SimpleFireWall 
-#TCP-Server
+#F1 - Hosting firewall function 
 import socketserver
 import socket
 import threading
@@ -7,25 +6,8 @@ import os
 import sys
 import datetime
 import time
-class Tee(object):
-    def __init__(self, name, mode):
-        # self.file = open(name, mode)
-        self.stdout = sys.stdout
-        
-        self.start_time = time.time() 
-    def __del__(self):
-        sys.stdout = self.stdout
-        # self.file.close()
-    def write(self, data):
-        # self.file.write(data +"|-->" + str(time.perf_counter() - self.start_time) +"\n")
-        self.stdout.write(data +"|-->" + str(time.time() - self.start_time) +"\n")
-    def flush(self):
-        self.file.flush()
-timestamp = str(datetime.datetime.now().strftime("%Y%m%d_%H-%M-%S"))
-tee = Tee("F1.log","w")
 
 hasToStop = [False]
-
 
 WAN_ADDR = os.environ['F1_LIST_ADDR'] if os.environ.get('F1_LIST_ADDR') is not None else "127.0.0.1"
 WAN_HTTP_PORT = int(os.environ['F1_HTTP_PORT']) if os.environ.get('F1_HTTP_PORT') is not None else 2433
@@ -45,28 +27,27 @@ class Handler_Wan_HTTP(socketserver.BaseRequestHandler):
         self.data = self.request.recv(1024)
         if "[U3-END]" in self.data.strip().decode('UTF-8'):
             try :
-                tee.write("[F1-E] End Signal received")
+                print("[F1-E] End Signal received")
                 tcp_u1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 tcp_u2 = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
                 tcp_u1.connect((U1_ADDR,U1_HTTP_PORT))
                 tcp_u2.connect((U2_ADDR,U2_IN_PORT))
-                # buff_u2 = ''+ self.data.strip()
                 tcp_u1.sendall(self.data)
                 tcp_u2.sendall(self.data)
                 self.request.sendall("RAS".encode())
                 hasToStop[0] = True
             except Exception as e:
-                tee.write(e)
+                print(e)
             finally:
                 return
         try:
             # Establish connection to TCP server and exchange data
             tcp_client.connect((U1_ADDR,U1_HTTP_PORT))
-            tee.write("[F2-HTTP-ST]'{}' sent to {}".format(self.data.decode('UTF-8'),self.client_address[0]))
+            print("[F2-HTTP-ST]'{}' sent to {}".format(self.data.decode('UTF-8'),self.client_address[0]))
             tcp_client.sendall(self.data)
             # Read data from the TCP server and close the connection
             received = tcp_client.recv(1024)
-            tee.write("[F2-HTT-RF]'{}' send to {}".format(self.data.decode('UTF-8'),self.client_address[0]))
+            print("[F2-HTT-RF]'{}' send to {}".format(self.data.decode('UTF-8'),self.client_address[0]))
             self.request.sendall(received)
         except Exception as e:
             print(e)
@@ -101,7 +82,7 @@ class Handler_Wan_SSH(socketserver.BaseRequestHandler):
 
 def main ():
     threads = []
-
+    #Create TCP server socket
     wan_http_socket = socketserver.TCPServer((WAN_ADDR,WAN_HTTP_PORT),Handler_Wan_HTTP)
     wan_ssh_socket = socketserver.TCPServer((WAN_ADDR,WAN_SSH_PORT),Handler_Wan_SSH)
 
@@ -111,7 +92,7 @@ def main ():
     for x in threads:
          x.start()
 
-    tee.write("F1 UP !")
+    print("F1 UP !")
     # Wait for all of them to finish
     while not hasToStop[0]:
         continue
@@ -119,8 +100,7 @@ def main ():
     wan_ssh_socket.shutdown()
     for x in threads:
         x.join()
-    # tee.flush()
-    tee.write("F1 END !")
+    print("F1 END !")
 
 if __name__ == "__main__":
     main()

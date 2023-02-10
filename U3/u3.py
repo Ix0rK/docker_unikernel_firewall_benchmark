@@ -1,4 +1,4 @@
-#TCP-Server
+#U3
 import socket
 import os
 import subprocess, os, sys
@@ -6,16 +6,14 @@ import datetime
 import time
 
 class Tee(object):
+    #Logger use to at time elapsed time from a starting time object
+    #The starting time object its initialize at instanciation of the object
     def __init__(self, name, mode):
-        # self.file = open(name, mode)
         self.stdout = sys.stdout
-        # sys.stdout = self
-        self.start_time = time.time() 
+        self.start_time = time.time()
     def __del__(self):
         sys.stdout = self.stdout
-        # self.file.close()
     def write(self, data):
-        # self.file.write(data +"|-->" + str(time.perf_counter() - self.start_time) +"\n")
         self.stdout.write(data +"|-->" + str(time.time() - self.start_time) +"\n")
     def flush(self):
         self.file.flush()
@@ -104,9 +102,8 @@ if __name__ == "__main__":
     timestamp = str(datetime.datetime.now().strftime("%Y%m%d_%H-%M-%S"))
     tee = Tee("U3.log","w")
     tee.write("U3 UP!")
-    # requestBypassFirewall(tee)
+    requestBypassFirewall(tee)
     requestSimple(tee)
     requestWithRedirection(tee)
     requestEnd(tee)
-    # tee.flush()
     tee.write("U3 END !")

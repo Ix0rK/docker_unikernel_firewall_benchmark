@@ -7,4 +7,3 @@ RUN mkdir logs
 ENTRYPOINT python3 u1.py
 
 HEALTHCHECK CMD netstat -an | grep 20433 > /dev/null; if [ 0 != $? ]; then exit 1; fi;
-# HEALTHCHECK CMD-SHELL netstat -an | grep 20022 > /dev/null; if [ 0 != $? ]; then exit 1; fi;

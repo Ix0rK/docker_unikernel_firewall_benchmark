@@ -1,4 +1,3 @@
-
 FROM alpine:3.14
 RUN apk add --update --no-cache python3
 RUN python3 -m ensurepip
@@ -8,4 +7,3 @@ RUN mkdir logs
 ENTRYPOINT python3 u2.py
 
 HEALTHCHECK CMD netstat -an | grep 22221 > /dev/null; if [ 0 != $? ]; then exit 1; fi;
-# HEALTHCHECK CMD-SHELL netstat -an | grep 22223 > /dev/null; if [ 0 != $? ]; then exit 1; fi;
